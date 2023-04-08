@@ -23,3 +23,7 @@ long getFileSize(const char *filename) {
 
     return size;
 }
+
+int readNextByte(FILE *fp) {
+    return fgetc(fp);
+}
