@@ -1,7 +1,7 @@
 #include "multifile.h"
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <malloc.h>
 
 /**
  * @param filename - name of file
@@ -31,20 +31,19 @@ long getFileSizeByPointer(FILE *fp) {
     return size;
 }
 
-int readNextByte(FILE *fp) {
-    return fgetc(fp);
-}
-
 bytesArray readBytes(FILE *fp, long startFrom, long howMuch) {
-    long arraySize = howMuch < getFileSizeByPointer(fp) + 1 ? howMuch : getFileSizeByPointer(fp);
-    int* array = (int*)malloc(arraySize * sizeof(int));
-
-    fseek(fp, startFrom + howMuch, SEEK_SET);
-
-    for (int i = 0; i < arraySize; i++) {
-        array[i] = readNextByte(fp);
+    long fileSize = getFileSizeByPointer(fp);
+    long arraySize = startFrom + howMuch <= fileSize ? howMuch : fileSize - startFrom;
+    char* buffer = (char*)malloc(arraySize * sizeof(char));
+    bytesArray Array = {.bytesPointer = buffer, .size = -1};
+    if (buffer == NULL){
+        errno = ENOMEM;
+        perror("Error allocating memory");
+    } else {
+        fseek(fp, startFrom, SEEK_SET);
+        if (fread(buffer, sizeof(char), howMuch, fp) == howMuch) {
+            Array.size = arraySize;
+        }
     }
-
-    bytesArray Array = {.size = arraySize, .bytesPointer = array};
     return Array;
 }
