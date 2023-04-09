@@ -5,7 +5,7 @@
 
 typedef struct {
     long size;
-    char* bytesPointer;
+    unsigned char* bytesPointer;
 } bytesArray;
 
 extern long getFileSize(const char *filename);

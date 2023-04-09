@@ -1,7 +1,8 @@
 #include "multifile.h"
 
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
+#include <errno.h>
 
 /**
  * @param filename - name of file
@@ -34,14 +35,14 @@ long getFileSizeByPointer(FILE *fp) {
 bytesArray readBytes(FILE *fp, long startFrom, long howMuch) {
     long fileSize = getFileSizeByPointer(fp);
     long arraySize = startFrom + howMuch <= fileSize ? howMuch : fileSize - startFrom;
-    char* buffer = (char*)malloc(arraySize * sizeof(char));
+    unsigned char* buffer = (unsigned char*)malloc(arraySize * sizeof(char));
     bytesArray Array = {.bytesPointer = buffer, .size = -1};
     if (buffer == NULL){
         errno = ENOMEM;
         perror("Error allocating memory");
     } else {
         fseek(fp, startFrom, SEEK_SET);
-        if (fread(buffer, sizeof(char), howMuch, fp) == howMuch) {
+        if (fread(buffer, sizeof(char), arraySize, fp) == arraySize) {
             Array.size = arraySize;
         }
     }
@@ -52,6 +53,7 @@ void freeBytesArray(bytesArray* array) {
     if (array == NULL) {
         errno = EINVAL; // Invalid argument error
         perror("Error freeing memory");
+        return;
     }
     free(array->bytesPointer);
     free(array);
