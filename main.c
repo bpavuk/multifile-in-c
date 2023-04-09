@@ -10,21 +10,19 @@ int main() {
     FILE *pony_video = fopen("/home/pavuk/pony_fuckery.mp4", "rb");
 
     rewind(pony_video);
-    bytesArray chunk = readBytes(pony_video, 0, 1024);
+    bytesArray chunk;
 
-    int chunkNum = 1;
-    int test1 = chunk.bytesPointer[chunk.size - 1];
-    int test2;
+    int chunkNum = 0;
     do {
+        chunk = readBytes(pony_video, chunkNum * 16, 16);
         for (int i = 0; i < chunk.size; ++i) {
             printf("%d ", chunk.bytesPointer[i]);
         }
-        free(chunk.bytesPointer);
-        chunk = readBytes(pony_video, chunkNum * 1024, 1024);
-        test2 = chunk.bytesPointer[0];
-    } while (chunk.bytesPointer[chunk.size - 1] != -1);
-
+        chunkNum++;
+    } while (chunkNum < 3);
     free(chunk.bytesPointer);
+
+    fclose(pony_video);
 
     return 0;
 }
