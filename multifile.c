@@ -36,7 +36,7 @@ bytesArray readBytes(FILE *fp, long startFrom, long howMuch) {
     long fileSize = getFileSizeByPointer(fp);
     long arraySize = startFrom + howMuch <= fileSize ? howMuch : fileSize - startFrom;
     unsigned char* buffer = (unsigned char*)malloc(arraySize * sizeof(char));
-    bytesArray Array = {.bytesPointer = buffer, .size = -1};
+    bytesArray Array = {.bytesPointer = buffer, .size = -1, .eof = false};
     if (buffer == NULL){
         errno = ENOMEM;
         perror("Error allocating memory");
@@ -45,6 +45,7 @@ bytesArray readBytes(FILE *fp, long startFrom, long howMuch) {
         if (fread(buffer, sizeof(char), arraySize, fp) == arraySize) {
             Array.size = arraySize;
         }
+        if (feof(fp)) Array.eof = true;
     }
     return Array;
 }

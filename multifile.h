@@ -2,10 +2,13 @@
 #define MULTIFILE_IN_C_MULTIFILE_H
 
 #include <stdio.h>
+#include <stdbool.h>
+
 
 typedef struct {
     long size;
     unsigned char* bytesPointer;
+    bool eof;
 } bytesArray;
 
 extern long getFileSize(const char *filename);
