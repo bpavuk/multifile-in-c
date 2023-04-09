@@ -47,3 +47,12 @@ bytesArray readBytes(FILE *fp, long startFrom, long howMuch) {
     }
     return Array;
 }
+
+void freeBytesArray(bytesArray* array) {
+    if (array == NULL) {
+        errno = EINVAL; // Invalid argument error
+        perror("Error freeing memory");
+    }
+    free(array->bytesPointer);
+    free(array);
+}
