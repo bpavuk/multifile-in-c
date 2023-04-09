@@ -18,9 +18,9 @@ int main() {
         for (int i = 0; i < chunk.size; ++i) {
             printf("%d ", chunk.bytesPointer[i]);
         }
+        free(chunk.bytesPointer);
         chunkNum++;
     } while (chunkNum < 3);
-    free(chunk.bytesPointer);
 
     fclose(pony_video);
 
